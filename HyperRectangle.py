@@ -63,7 +63,7 @@ class HyperRectangle:
 	# @return boolean True if the point lies in the way of expansion, False if off to the side
 	def inWay(self, point, d): # O(2k) -> O(k)
 		# This is very similar to the contains condition, except we only consider the dimensions aside from d
-		aboveL = self.L < point; aboveL[d] = True # set dth entries to True so they can't turn the all condiiton False
+		aboveL = self.L < point; aboveL[d] = True # set dth entries to True so they can't turn the all condiiton Falsezor
 		belowU = self.U > point; belowU[d] = True
 		return numpy.all(aboveL) and numpy.all(belowU)
 
@@ -104,8 +104,8 @@ class HyperRectangle:
 			behind = pointHeights <= rectangleHeight
 
 			# plot the behind and in-front points
-			axes.scatter(data[behind, pair[0]], data[behind, pair[1]], zorder=0)
-			axes.scatter(data[~behind, pair[0]], data[~behind, pair[1]], zorder=2)
+			axes.scatter(data[behind, pair[0]], data[behind, pair[1]], zorder=0) # blue
+			axes.scatter(data[~behind, pair[0]], data[~behind, pair[1]], zorder=2) # orange
 
 			# plot this rectangle
 			axes.add_patch(patches.Rectangle((self.L[pair[0]], self.L[pair[1]]), # corner

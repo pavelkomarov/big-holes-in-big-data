@@ -1,19 +1,11 @@
 import numpy
 from itertools import product
 from pickle import dump
-from copy_reg import pickle
 from types import MethodType
 from datetime import datetime
 from multiprocessing import cpu_count
 from joblib import Parallel, delayed
 from HyperRectangle import HyperRectangle
-
-# These functions pickle and unpickle instance methods of objects that inherit from object.
-def _pickle_method(method):
-	return _unpickle_method, (method.im_func.__name__, method.im_self, method.im_class)
-def _unpickle_method(func_name, obj, cls):
-	return cls.__dict__[func_name].__get__(obj, cls)
-pickle(MethodType, _pickle_method, _unpickle_method) # Register the methods with copy_reg
 
 ## This class implements a monte-carlo-based polynomial-time algorithm for finding Big Holes in Big Data, which is also
 # incidentally the title of the paper on which it is based. https://arxiv.org/pdf/1704.00683.pdf The C++ code to go with
@@ -89,7 +81,7 @@ class HoleFinder(object):
 			hofSizes.append(len(hallOfFame))
 			print('c=', c, ', maxitr=', maxitr, '%exterior=', exterior*100.0/len(mehrs), 'last 20 hallOfFame sizes=',
 					hofSizes[-20:], 'total loops=', len(hofSizes))
-			dump(hallOfFame, open('MEHRS_' + self.time, 'w+')) # save the largest holes found
+			dump(hallOfFame, open('MEHRS_' + self.time, 'wb')) # save the largest holes found
 
 		return hallOfFame
 
@@ -113,7 +105,7 @@ class HoleFinder(object):
 			ehr.L[i] = self.projections[i][ndxs[i] - 1] # r is between the ndx and ndx-1th items
 
 		# Perform the expansion step to make the ehr into a maximal ehr.
-		self.strategy(ehr, ndxs, ndxs-1) # passing ndxs and ndxs-1 allocates a second array, which is convenient later
+		return self.strategy(ehr, ndxs, ndxs-1) # passing ndxs and ndxs-1 allocates a second array, which is convenient later
 
 	## The sequential strategy involves expanding in one dimension as far as possible, then expanding in the next as
 	# far as possible, and so on. Because rectangles start out small and narrow, the expansions typically do not run in
@@ -154,7 +146,7 @@ class HoleFinder(object):
 	# sides by points. This strategy has the effect of yielding rectangles with fairly even widths in all dimensions.
 	# @params and @return See _sequentialExpand
 	def _evenExpand(self, ehr, undxs, lndxs): # O(k^2 n)
-		order = numpy.random.permutation(range(self.k)): # fixed random order
+		order = numpy.random.permutation(range(self.k)) # fixed random order
 		ubound = numpy.zeros(self.k, dtype=bool) # keep track of which sides the rectangle is bound on
 		lbound = numpy.zeros(self.k, dtype=bool)
 		interior = True
@@ -199,10 +191,10 @@ class HoleFinder(object):
 		while directions and (interior or not self.interiorOnly):
 			r = numpy.random.randint(len(directions))
 			d, coin = directions[r]
+			# Take a small number of steps. If I try to step over the bounary, the length conditions will catch me.
+			steps = int(numpy.abs(numpy.random.normal(scale=2))) + 1 # always try to step at least once
 
 			if coin: # going up
-				# At maximum try to step all the way to boundary. Always step at least once.
-				steps = numpy.random.randint(len(self.projections[d]) - undxs[d]) + 1 # number from [1, len - undx] TODO: Should I be biasing toward lower choices here?
 				for i in range(steps):
 					upnts = self.data[self.maps[d][undxs[d]]]
 					# If we read a limit in this direction, then no longer consider it.
@@ -215,12 +207,11 @@ class HoleFinder(object):
 						ehr.U[d] = self.projections[d][undxs[d]]
 
 			else: # going down
-				steps = numpy.random.randint(lndxs[d]) + 1 # number from [1, lndx] TODO: And here?
 				for i in range(steps):
 					lpnts = self.data[self.maps[d][lndxs[d]]]
 					if numpy.any([ehr.inWay(p, d) for p in lpnts]) or lndxs[d] <= 0:
 						directions = directions[:r] + directions[r+1:] # slice out this direction
-						interor &= not lndxs[d] <= 0
+						interior &= not lndxs[d] <= 0
 						break
 					else:
 						lndxs[d] -= 1
@@ -230,15 +221,16 @@ class HoleFinder(object):
 
 if __name__ == '__main__':
 	strategy = 'random' # or 'even' or 'sequential'
-	maxitr = 100 # how many queries to do since last best found before satisfied
+	maxitr = 1000 # how many queries to do since last best found before satisfied
 	interiorOnly = True # whether to consider only rectangles that are bounded on all sides by points rather than limits of the space
 	threshold = None # just find a list of the biggest
 	
-	X = None # Load your data
+	from sklearn import datasets
+	iris = datasets.load_iris() # Load your data
+	X = iris['data']
 
 	hf = HoleFinder(X, strategy, interiorOnly)
 	hallOfFame = hf.findLargestMEHRs(maxitr, threshold) # also dumps hallOfFame to disk
 
-	hallOfFame[-1].plot(X, ['A', 'B', 'C'])
-
+	hallOfFame[-1].plot(X, iris['feature_names'])
 
