@@ -119,4 +119,5 @@ class HyperRectangle:
 
 		pyplot.subplots_adjust(left=0.05, right=0.98, bottom=0.05, top=0.95, hspace=0.33, wspace=0.33)
 		pyplot.suptitle('Rectangle with volume ' + str(self.volume()))
+		pyplot.show()
 		

@@ -61,9 +61,6 @@ class TestHyperRectangle(unittest.TestCase):
 	def testPlot(self):
 		k = len(self.data[0])
 		self.rect3.plot(numpy.array(self.data), [str(i) for i in range(k*(k-1)//2)])
-		pyplot.show(block = False)
-		pyplot.pause(10)
-		pyplot.close()
 
 if __name__ == '__main__':
 	unittest.main()
