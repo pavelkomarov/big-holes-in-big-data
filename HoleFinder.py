@@ -10,7 +10,7 @@ from HyperRectangle import HyperRectangle
 ## This class implements a monte-carlo-based polynomial-time algorithm for finding Big Holes in Big Data, which is also
 # incidentally the title of the paper on which it is based. https://arxiv.org/pdf/1704.00683.pdf The C++ code to go with
 # the paper is at https://github.com/joelemley/holesindata
-class HoleFinder(object):
+class HoleFinder:
 
 	## Constructor
 	# @param data A 2D array, n k-dimensional points stacked together
@@ -134,7 +134,7 @@ class HoleFinder(object):
 				lpnts = self.data[self.maps[d][lndxs[d]]] # the points that border the expanded rectangle on the lower side
 				if numpy.any([ehr.inWay(p, d) for p in lpnts]) or lndxs[d] <= 0:
 					ehr.L[d] = self.projections[d][lndxs[d]]
-					interior &= not lndxs <= 0
+					interior &= not lndxs[d] <= 0
 					break
 				else:
 					lndxs[d] -= 1 # consider the next batch, the points with the next-lowest value in the dth dimension
@@ -192,7 +192,7 @@ class HoleFinder(object):
 			r = numpy.random.randint(len(directions))
 			d, coin = directions[r]
 			# Take a small number of steps. If I try to step over the bounary, the length conditions will catch me.
-			steps = int(numpy.abs(numpy.random.normal(scale=2))) + 1 # always try to step at least once
+			steps = int(numpy.abs(numpy.random.normal(scale=1))) + 1 # always try to step at least once
 
 			if coin: # going up
 				for i in range(steps):
@@ -217,20 +217,5 @@ class HoleFinder(object):
 						lndxs[d] -= 1
 						ehr.L[d] = self.projections[d][lndxs[d]]
 
-			return ehr, interior
-
-if __name__ == '__main__':
-	strategy = 'random' # or 'even' or 'sequential'
-	maxitr = 1000 # how many queries to do since last best found before satisfied
-	interiorOnly = True # whether to consider only rectangles that are bounded on all sides by points rather than limits of the space
-	threshold = None # just find a list of the biggest
-	
-	from sklearn import datasets
-	iris = datasets.load_iris() # Load your data
-	X = iris['data']
-
-	hf = HoleFinder(X, strategy, interiorOnly)
-	hallOfFame = hf.findLargestMEHRs(maxitr, threshold) # also dumps hallOfFame to disk
-
-	hallOfFame[-1].plot(X, iris['feature_names'])
+		return ehr, interior
 
