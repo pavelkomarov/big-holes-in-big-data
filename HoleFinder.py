@@ -229,7 +229,16 @@ class HoleFinder(object):
 			return ehr, interior
 
 if __name__ == '__main__':
+	strategy = 'random' # or 'even' or 'sequential'
+	maxitr = 100 # how many queries to do since last best found before satisfied
+	interiorOnly = True # whether to consider only rectangles that are bounded on all sides by points rather than limits of the space
+	threshold = None # just find a list of the biggest
 	
+	X = None # Load your data
 
+	hf = HoleFinder(X, strategy, interiorOnly)
+	hallOfFame = hf.findLargestMEHRs(maxitr, threshold) # also dumps hallOfFame to disk
+
+	hallOfFame[-1].plot(X, ['A', 'B', 'C'])
 
 
