@@ -5,7 +5,7 @@ from types import MethodType
 from datetime import datetime
 from multiprocessing import cpu_count
 from joblib import Parallel, delayed
-from HyperRectangle import HyperRectangle
+from .HyperRectangle import HyperRectangle
 
 ## This class implements a monte-carlo-based polynomial-time algorithm for finding Big Holes in Big Data, which is also
 # incidentally the title of the paper on which it is based. https://arxiv.org/pdf/1704.00683.pdf The C++ code to go with
@@ -41,8 +41,9 @@ class HoleFinder:
 	#	threshold is not given)
 	# @param threshold If given, then this algorithm looks for all rectangles with a volume over this value. If not
 	#	given, this algorithm attempts to find the largest few hyper-rectangles.
+	# @param whether to print status messages (highly desirable for long runs)
 	# @return largest A list of large maximal hyper-rectangles, sorted largest last
-	def findLargestMEHRs(self, maxitr, threshold=None):
+	def findLargestMEHRs(self, maxitr, threshold=None, verbose=True):
 		c = 0
 		maxFound = 0
 		hallOfFame = [] if threshold is None else {}
@@ -50,7 +51,7 @@ class HoleFinder:
 
 		while c < maxitr:
 			# parallelize finding batches of new HyperRectangles, where batch size is 10*num processes at most
-			mehrs = Parallel(n_jobs=cpu_count(), verbose=True)(delayed(self._findRandomMEHR)()
+			mehrs = Parallel(n_jobs=cpu_count(), verbose=verbose)(delayed(self._findRandomMEHR)()
 				for x in range(min(maxitr-c, cpu_count()*10)))
 
 			# Handle all the rectangles found.
@@ -62,15 +63,15 @@ class HoleFinder:
 				# If using a threshold, then collect together all unique rectanges with volume over that threshold
 				if (interior or not self.interiorOnly) and threshold and volume > threshold:
 					if rect not in hallOfFame: # `in` checked with hash (fast)
-						print('found new significant rectangle with volume', volume)
+						if verbose: print('found new significant rectangle with volume', volume)
 						hallOfFame[rect] = volume
 						c = 0
 					else:
-						print('found already-discovered rectangle with volume', volume) # very unlikely, but can happen
+						if verbose: print('found already-discovered rectangle with volume', volume) # very unlikely, but can happen
 						c += 1 # count as a failed query
 				# If not using threshold, just keep track of new largest rectangles found
 				elif (interior or not self.interiorOnly) and not threshold and volume > maxFound:
-					print('found new largest with volume', volume)
+					if verbose: print('found new largest with volume', volume)
 					maxFound = volume
 					hallOfFame.append(rect)
 					c = 0
@@ -79,8 +80,8 @@ class HoleFinder:
 					c += 1 # count unsuccessful queries
 
 			hofSizes.append(len(hallOfFame))
-			print('c=', c, ', maxitr=', maxitr, '%exterior=', exterior*100.0/len(mehrs), 'last 20 hallOfFame sizes=',
-					hofSizes[-20:], 'total loops=', len(hofSizes))
+			if verbose: print('c=', c, ', maxitr=', maxitr, '%exterior=', exterior*100.0/len(mehrs),
+				'last 10 hallOfFame sizes=', hofSizes[-10:], 'total loops=', len(hofSizes))
 			dump(hallOfFame, open('MEHRS_' + self.time, 'wb')) # save the largest holes found
 
 		return hallOfFame
