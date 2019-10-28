@@ -4,7 +4,7 @@ with open('README.md') as readme:
 	long_description = readme.read()
 
 setup(name='big-holes-in-big-data',
-      version=0.1,
+      version=0.2,
       description='find empty hyperrectangles in high-dimensional point clouds',
 	  long_description=long_description,
       url='https://github.com/pavelkomarov/big-holes-in-big-data',
