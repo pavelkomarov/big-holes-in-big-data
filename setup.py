@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 with open('README.md') as readme:
 	long_description = readme.read()
@@ -10,6 +10,6 @@ setup(name='big-holes-in-big-data',
       url='https://github.com/pavelkomarov/big-holes-in-big-data',
       author='Pavel Komarov',
       license='BSD',
-      packages=[x for x in find_packages() if 'tests' not in x],
+      packages=['bigholes'],
       install_requires=['numpy', 'matplotlib'],
       author_email='pvlkmrv@gmail.com')
