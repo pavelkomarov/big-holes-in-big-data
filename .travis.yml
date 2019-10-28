@@ -1,28 +1,21 @@
 language: python
 python:
 - 3.6
-
 install:
 - pip install notebook
-
 script:
 - echo "Be excellent to each other!"
 - python -m nbconvert --to html how_to_use.ipynb
-
-# Aight, this is definitively how you do these encrypted keys: `sudo apt install ruby ruby-dev libz-dev`,
-# `gem install travis`, make sure you're in a folder with a .travis.yml, `travis encrypt thekey123456abcde`, and put
-# the result under the thing it's supposed to represent. No VARIABLE=key, no worrying about capitalization or other
-# command line flags, no putting the raw key in here lest github sniff it out and delete your token.
 deploy:
 - provider: pages
   github_token:
-    secure: "dBtRk/cQSGrZGVSw8doItS/R2hrLDR7mUNTZHfw06pDgjTx5SPhZ+aF1vb5UrrgPn95xwuLpdTgD8EG0pg4KgHU11OFWCH+P/JVvA1JbnK9Te6G6eqPg295XX8BMxPD2I6og4rdGEAeX3qWhaR2+dRQh66Z6KNzd/uti+Gu7IAN1nS6m11HIVTA6+1toEc22eDckhZ7Z8dOiONfXNfRygtMQchabRFc/x9sSvHbMrriQXjCxX/LYx3UHb83FWLNrYDsigQrKfXkt1iC1VqfQQ5A5E86aVEJXzkTbuaxgGfzh32CURLi6EH6/uiChtkae5cCVWOk+UJY/G2KzSe2s2B3h9QHWDtf+8Lead7MvIiwtqIdRzLSL8IRiCM5wml1wBAIwUAFGNl5gs/nrcezBQCdIVh1OUONFfSEGaVMHGLo0psE8vZ3nTYrkxfexPGSB/V6FgjOM/2Jro/AeJgaDfH9xIW8TBMKm9x2s0CcnOrI5S6D4JuZqaMH0Kb5mkTtSQzQcSzq5DjzMnQZ34hRHtkEiFvEwP3ygE3wwkMTp19WCg9PdnGRjOoverEM3PU6Yq/ZIB3BER/x371pZ4dF1LOqGKYT3JFyMPQ+RiS5Co7R/oaZ/S5fP5Bko5KXxTTi8o2VXAoqKXnL+hirdd0Q6KU4ELIEuVfWvl5CUYbAQ1YI="
-  skip_cleanup: true # https://docs.travis-ci.com/user/deployment/pages/
+    secure: dBtRk/cQSGrZGVSw8doItS/R2hrLDR7mUNTZHfw06pDgjTx5SPhZ+aF1vb5UrrgPn95xwuLpdTgD8EG0pg4KgHU11OFWCH+P/JVvA1JbnK9Te6G6eqPg295XX8BMxPD2I6og4rdGEAeX3qWhaR2+dRQh66Z6KNzd/uti+Gu7IAN1nS6m11HIVTA6+1toEc22eDckhZ7Z8dOiONfXNfRygtMQchabRFc/x9sSvHbMrriQXjCxX/LYx3UHb83FWLNrYDsigQrKfXkt1iC1VqfQQ5A5E86aVEJXzkTbuaxgGfzh32CURLi6EH6/uiChtkae5cCVWOk+UJY/G2KzSe2s2B3h9QHWDtf+8Lead7MvIiwtqIdRzLSL8IRiCM5wml1wBAIwUAFGNl5gs/nrcezBQCdIVh1OUONFfSEGaVMHGLo0psE8vZ3nTYrkxfexPGSB/V6FgjOM/2Jro/AeJgaDfH9xIW8TBMKm9x2s0CcnOrI5S6D4JuZqaMH0Kb5mkTtSQzQcSzq5DjzMnQZ34hRHtkEiFvEwP3ygE3wwkMTp19WCg9PdnGRjOoverEM3PU6Yq/ZIB3BER/x371pZ4dF1LOqGKYT3JFyMPQ+RiS5Co7R/oaZ/S5fP5Bko5KXxTTi8o2VXAoqKXnL+hirdd0Q6KU4ELIEuVfWvl5CUYbAQ1YI=
+  skip_cleanup: true
   on:
     branch: master
 - provider: pypi
   user: pavelkomarov
   password:
-    secure: L12e2JIGYwgiK+0s1pp2A/OsdZmRQALXbMTEjOWTNurWhTxXZZJ9R+M6U2M9ZmkxZ6we3maZ3Bcuv10zzvi/LoE0VIgaaL+kLHYkq1hPe83wxdmEepk4/uzIABy6XKunx59ennMJSaMZM+9Ks5VzZ1GuVhKhpt13FQQbbKX4uw9lywalzkuKbyD20boaJeJfKAkXguQAzquZB1+n1cpeKO/2qkMQ+2M6iSIT+kM0qPZrS6xJ5ENrjxlDqIuDLlw/XZqRUyEdm9SKDYycq9Imw5aOFI2uTyrjowBlTRNTqbclo6NOak4YQ5zGzk0Rqq2tQKXgamEhmF5JwACQo1DsJapK7ihJC+blSIlkDSvrmUivgjJmF8GdFzgSumek60MRwqqs9t9PdmV/p3rzm+nlcstpwh3s7DVMTLMGkXXqdr2CJAQXFb0QRag6chURAPRSA4N6Z8bm45LURwJq5mHetm9tbxQHoWwV1/SIjQ2wgAeTZNog1jCk/4LSdDCTrAx1/0MVjVUOIY+hlH4UvZDS61CSeDEZUH4HTttz+Zbf01byu63LyC6mg7WwTMRHGc8T36c/XPrKzgSVkLqeDOZVani9hakUvcHT5EyMYXUZmECQ7GTHRB4Ttf2wREPSIRX1FdOnm10+JUb9YqRkVHbvb/ye+1l1DNLcmBNGOLyQb9M=
+    secure: ERjhTHKngos4kX1uOqQcpedC2BDJYbBaloPV8S9K+c42yBGHyXzET9PPPgZGVQ9rfKugJW4CDvjnXsCI5y3pLszq4oUGPjB2MH3I+sjTIa/LdHeowlyhOSv1EQQkJCfO2K+XdKtILxwpXY87YdfQnuE/38fxmvSsFkmTU429NWAWmhZVY574G1yCtvpL31MAus1B2YQ3DlcQrmJajY/kpHzsqRM5lXnjftNocSY00dxNTg6qapAMAN0nYJNV8HJ7I6vPy6x00CEvhWStwuxwTqcnfMHNmDYPZKmtxSGBhOZBSOuTJZjmRJ3aOyjebXljkSev3+/kiF0DMUIbbp++cD7HxuXJ/tZ69BIhpoTh8fvQqDObod4UomksYiGiaCMqBCPE6vPRs/6oc8xaab637iq6Z1e9leEgXFoO5j8Dp9/j843yXMXCbn6V32VwGgIVE/Wt5d7SzrhF/cVbrkCZR68x3HAXWqrR9V8//LIes89g9Id2A2/f1qf8iKIGd3fgRZoWQcAPhnr6e6Dg5suCeLUjyEcOatsMaSbVppSQaI/5YFh7nF7Cvas/f/80DxsAQU28w04c2u815R0DzDbvC3q7FiG7/7MqiVWsj5CV4ZXn85SWVjAPANDJN/V7U2HIkMvomlS3XbbS8gw9UleEy61qaOH+WHnHwpeZ4L/BO/4=
   on:
     branch: master
