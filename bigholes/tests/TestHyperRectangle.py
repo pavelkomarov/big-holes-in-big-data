@@ -1,3 +1,4 @@
+import sys; sys.path.append('..') # otherwise I can't import HyperRectangle
 import unittest
 from HyperRectangle import HyperRectangle
 from itertools import product
