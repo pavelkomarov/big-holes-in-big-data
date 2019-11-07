@@ -24,7 +24,7 @@ class HoleFinder:
 		self.lows = numpy.min(data, axis=0) # find the boundaries of the data
 		self.highs = numpy.max(data, axis=0)
 		self.n, self.k = data.shape # because I'll use these often
-		# projections are a view of hte data along a single dimension. The values along these number lines are sorted
+		# projections are a view of the data along a single dimension. The values along these number lines are sorted
 		# and deduplicated to provide a quick way to access the locations of next points in any direction. When a
 		# rectangle's edge is expanded, it is always up to some entry in the corresponding projection.
 		self.projections = [numpy.unique(data[:,i]) for i in range(self.k)] # unique returns sorted results
