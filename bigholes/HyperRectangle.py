@@ -62,8 +62,9 @@ class HyperRectangle:
 	# @param d An integer denoting the dimension of expansion
 	# @return boolean True if the point lies in the way of expansion, False if off to the side
 	def inWay(self, point, d): # O(2k) -> O(k)
-		# This is very similar to the contains condition, except we only consider the dimensions aside from d
-		aboveL = self.L < point; aboveL[d] = True # set dth entries to True so they can't turn the all condiiton Falsezor
+		# This is very similar to the contains condition, except we only consider the dimensions aside from d.
+		# Imagine a point above a cube; then it is inside the cube's bounds in the x and y dimensions, but not in z.
+		aboveL = self.L < point; aboveL[d] = True # set dth entries to True so they can't turn the all condition False
 		belowU = self.U > point; belowU[d] = True
 		return numpy.all(aboveL) and numpy.all(belowU)
 
