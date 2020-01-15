@@ -1,0 +1,27 @@
+language: python
+python:
+- 3.6
+install:
+- pip install notebook
+script:
+- echo "Be excellent to each other!"
+- python -m nbconvert --to html how_to_use.ipynb
+
+# Aight, this is definitively how you do these encrypted keys: `sudo apt install ruby ruby-dev libz-dev`,
+# `gem install travis`, make sure you're in a folder with a .travis.yml, `travis encrypt thekey123456abcde`, and put
+# the result under the thing it's supposed to represent. No VARIABLE=key, no worrying about capitalization or other
+# command line flags, no putting the raw key in here lest github sniff it out and delete your token.
+deploy:
+- provider: pages
+  github_token:
+    secure: dBtRk/cQSGrZGVSw8doItS/R2hrLDR7mUNTZHfw06pDgjTx5SPhZ+aF1vb5UrrgPn95xwuLpdTgD8EG0pg4KgHU11OFWCH+P/JVvA1JbnK9Te6G6eqPg295XX8BMxPD2I6og4rdGEAeX3qWhaR2+dRQh66Z6KNzd/uti+Gu7IAN1nS6m11HIVTA6+1toEc22eDckhZ7Z8dOiONfXNfRygtMQchabRFc/x9sSvHbMrriQXjCxX/LYx3UHb83FWLNrYDsigQrKfXkt1iC1VqfQQ5A5E86aVEJXzkTbuaxgGfzh32CURLi6EH6/uiChtkae5cCVWOk+UJY/G2KzSe2s2B3h9QHWDtf+8Lead7MvIiwtqIdRzLSL8IRiCM5wml1wBAIwUAFGNl5gs/nrcezBQCdIVh1OUONFfSEGaVMHGLo0psE8vZ3nTYrkxfexPGSB/V6FgjOM/2Jro/AeJgaDfH9xIW8TBMKm9x2s0CcnOrI5S6D4JuZqaMH0Kb5mkTtSQzQcSzq5DjzMnQZ34hRHtkEiFvEwP3ygE3wwkMTp19WCg9PdnGRjOoverEM3PU6Yq/ZIB3BER/x371pZ4dF1LOqGKYT3JFyMPQ+RiS5Co7R/oaZ/S5fP5Bko5KXxTTi8o2VXAoqKXnL+hirdd0Q6KU4ELIEuVfWvl5CUYbAQ1YI=
+  skip_cleanup: true
+  on:
+    branch: master
+- provider: pypi
+  user: pavelkomarov
+  password:
+    secure: XY+ifeewicmrgwnoKlZ3NLKDsMFfMLpT5h9Pu+qkvJ4bzybT0YueFlUCN5Jl5Re/dmGH99/6A6oN4miXiX2a8TCSwxhZwWfGunhoPSxamOiBI6T8MVZuIxWj4KxbMimcBgglU1zwEI1wENDfwK7YkekQiFbE3J/y59hKeSfJ46OW68szWNbglNryHIbMQ6XkbkMMBueKhxzr84dbx0ChAteOpEBEXtgX67IgH/Cqp6gt2TND7FuwCwQCCZRRuIR6uBKA69QA2zNSVw5l6CvEtv4zz+w3IaPEOgHincOuKh2WAwvN8wtTJJbeORvNqG7rgC2ucv6hKDzrJ5/EgMG90L5YR+YKtGm5ygd9HOESn8m1b1+T8YJPHL6KbIDmzn5rzakr1DOMmI4CWgHVjkh4XYteF1nkgSLr6UAr8CXF+9/wP9u7XoW7O1LHuKEmmlGqGqJEXGDIia4jGlwg/fyDohxC4kXdm2jeqvEc1F5FcdyCFV3CyanAT/N2lXiUl+7pZ3Nk36x2dBdJqvXMzH+Vz/FTelZXXIkjQlTNO5dpOCu5kLkaqJOm7mutXwUtZ0Zvq+H5GdVvSS4cFgeFdYc15xH22ntaXtJFJCGncZ+oJF6vJXHWtFCMFX/lp+jBGzcejWcf8tQiLO366nGvNT31YU26L0zqNLJhXVyMo273HwA=
+  on:
+    tags: true
+    branch: master
